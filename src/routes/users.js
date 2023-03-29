@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -28,14 +29,36 @@ router.get('/protected-route', requireAuth, (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  // ... Perform user authentication (e.g., check email and password) ...
+  const { username, password } = req.body;
 
-  if (userIsValid) {
-    const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: '1h' });
-    res.json({ token: token });
-  } else {
-    res.status(401).json({ error: 'Invalid email or password' });
+  console.log('Username:', username);
+  console.log('Password:', password);
+
+  try {
+    const [user] = (await db.query('SELECT * FROM users WHERE username = ?', [username]))[0];
+
+    console.log('User from database:', user);
+
+    if (user) {
+      console.log('Before bcrypt.compare() - password:', password, 'user.password:', user.password);
+      const passwordIsValid = await bcrypt.compare(password, user.password);
+
+      console.log('Password is valid:', passwordIsValid);
+
+      if (passwordIsValid) {
+        const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '1h' });
+        res.json({ token: token });
+      } else {
+        res.status(401).json({ error: 'Invalid username or password' });
+      }
+    } else {
+      res.status(401).json({ error: 'Invalid username or password' });
+    }
+  } catch (error) {
+    console.error('Error during authentication:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 module.exports = router;

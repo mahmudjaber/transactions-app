@@ -1,4 +1,6 @@
 const db = require('./database');
+const express = require('express');
+const router = express.Router();
 
 async function testConnection() {
   try {
@@ -10,3 +12,4 @@ async function testConnection() {
 }
 
 testConnection();
+module.exports = router;
