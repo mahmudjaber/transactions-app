@@ -14,6 +14,10 @@ const transactionTypesRoutes = require('./routes/transactionTypes');
 const banksRoutes = require('./routes/banks');
 const usersRoutes = require('./routes/users');
 const userLogsRoutes = require('./routes/userLogs');
+// ...
+app.use('/api/users', userRoutes);
+require('dotenv').config();
+// ...
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 // Middleware to parse JSON request bodies

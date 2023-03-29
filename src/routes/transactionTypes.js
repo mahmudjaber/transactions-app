@@ -33,19 +33,19 @@ router.put('/:id', async (req, res) => {
   });
   // Route handler for fetching a single transaction by ID
 router.get('/:id', async (req, res) => {
-    const accountId = req.params.id;
+    const transaction_typeId = req.params.id;
   
     try {
-      const [rows] = await db.execute('SELECT * FROM transactions WHERE id = ?', [accountId]);
+      const [rows] = await db.execute('SELECT * FROM transaction_types WHERE id = ?', [transaction_typeId]);
   
       if (rows.length === 0) {
-        res.status(404).json({ error: 'transaction not found.' });
+        res.status(404).json({ error: 'transaction type not found.' });
       } else {
         res.json(rows[0]);
       }
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'An error occurred while fetching the transaction.' });
+      res.status(500).json({ error: 'An error occurred while fetching the transactions type.' });
     }
   });
   
